@@ -12,7 +12,7 @@
   <component name="FileEditorManager">
     <leaf>
       <file leaf-file-name="serv.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/../CPSC471assignments3/actual/serv.py">
+        <entry file="file://$PROJECT_DIR$/../CPSC471assignments3/serv.py">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="177">
               <caret line="14" column="18" selection-start-line="14" selection-start-column="18" selection-end-line="14" selection-end-column="18" />
@@ -21,31 +21,13 @@
         </entry>
       </file>
       <file leaf-file-name="cli.py" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/../CPSC471assignments3/actual/cli.py">
+        <entry file="file://$PROJECT_DIR$/../CPSC471assignments3/cli.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="259">
-              <caret line="92" column="26" lean-forward="true" selection-start-line="92" selection-start-column="26" selection-end-line="92" selection-end-column="26" />
+            <state relative-caret-position="184">
+              <caret line="87" column="26" lean-forward="true" selection-start-line="87" selection-start-column="26" selection-end-line="87" selection-end-column="26" />
               <folding>
                 <element signature="e#0#20#0" expanded="true" />
               </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="clientCode.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/../CPSC471assignments3/practice/clientCode.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="135">
-              <caret line="9" column="49" selection-start-line="9" selection-start-column="49" selection-end-line="9" selection-end-column="49" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="serverCode.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/../CPSC471assignments3/practice/serverCode.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="45">
-              <caret line="3" column="20" selection-end-line="28" />
             </state>
           </provider>
         </entry>
@@ -97,7 +79,7 @@
             <path>
               <item name="CPSC471assignments" type="b2602c69:ProjectViewProjectNode" />
               <item name="CPSC471assignments3" type="462c0819:PsiDirectoryNode" />
-              <item name="actual" type="462c0819:PsiDirectoryNode" />
+              <item name="practice" type="462c0819:PsiDirectoryNode" />
             </path>
           </expand>
           <select />
@@ -115,6 +97,7 @@
   </component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/../CPSC471assignments3" />
       <recent name="$PROJECT_DIR$" />
       <recent name="$PROJECT_DIR$/assigment3/practice" />
     </key>
@@ -153,8 +136,8 @@
       <window_info anchor="bottom" id="Run" order="2" />
       <window_info anchor="bottom" id="Version Control" show_stripe_button="false" />
       <window_info anchor="bottom" id="Python Console" />
-      <window_info active="true" anchor="bottom" id="Terminal" visible="true" weight="0.3290653" />
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.24963397" />
+      <window_info anchor="bottom" id="Terminal" visible="true" weight="0.3290653" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.24963397" />
       <window_info anchor="bottom" id="Docker" show_stripe_button="false" />
       <window_info anchor="right" id="Database" />
       <window_info anchor="right" id="SciView" />
@@ -177,20 +160,13 @@
     <option name="myLimit" value="2678400000" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/../CPSC471assignments3/actual/file.txt">
+    <entry file="file://$PROJECT_DIR$/../CPSC471assignments3/file.txt">
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
-    <entry file="file://$PROJECT_DIR$/../CPSC471assignments3/actual/serv.py">
+    <entry file="file://$PROJECT_DIR$/../CPSC471assignments3/serv.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="177">
           <caret line="14" column="18" selection-start-line="14" selection-start-column="18" selection-end-line="14" selection-end-column="18" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/../CPSC471assignments3/practice/clientCode.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="135">
-          <caret line="9" column="49" selection-start-line="9" selection-start-column="49" selection-end-line="9" selection-end-column="49" />
         </state>
       </provider>
     </entry>
@@ -201,10 +177,17 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/../CPSC471assignments3/actual/cli.py">
+    <entry file="file://$PROJECT_DIR$/../CPSC471assignments3/practice/clientCode.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="259">
-          <caret line="92" column="26" lean-forward="true" selection-start-line="92" selection-start-column="26" selection-end-line="92" selection-end-column="26" />
+        <state relative-caret-position="135">
+          <caret line="9" column="49" selection-start-line="9" selection-start-column="49" selection-end-line="9" selection-end-column="49" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../CPSC471assignments3/cli.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="184">
+          <caret line="87" column="26" lean-forward="true" selection-start-line="87" selection-start-column="26" selection-end-line="87" selection-end-column="26" />
           <folding>
             <element signature="e#0#20#0" expanded="true" />
           </folding>
