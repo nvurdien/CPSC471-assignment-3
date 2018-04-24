@@ -2,12 +2,8 @@ from socket import *
 from os import listdir
 from os.path import isfile, join
 
-serverName = "ecs.fullerton.edu"
-serverPort = 12000
-
-clientSocket = socket(AF_INET, SOCK_STREAM)
-
-clientSocket.connect((serverName, serverPort))
+HOST = 'localhost'
+PORT = 8082
 
 print('Welcome to my FTP')
 print('Commands:')
@@ -47,20 +43,17 @@ while command.strip().lower() != 'quit':
             print('filename required for \'get\' commands')
             continue
 
-        # sends filename to server
-        bytesSent = 0
-        while bytesSent != len(filename):
-            bytesSent += clientSocket.send(filename[bytesSent:])
-
         # then prepares to receive file from server
         with open(filename, 'wb') as f:
+            clientSocket = socket(AF_INET, SOCK_STREAM)
+            clientSocket.connect((HOST, PORT))
             print('receiving data ...')
             while True:
-                data = clientSocket.recv(1024)
+                data = clientSocket.recv(4096)
                 if not data:
                     break
                 f.write(data)
-
+            clientSocket.close()
         print('successfully received file ', filename, '!', sep='')
         # close file once done writing
         f.close()
@@ -74,9 +67,12 @@ while command.strip().lower() != 'quit':
 
         # checks if file exists in client's directory
         try:
+            clientSocket = socket(AF_INET, SOCK_STREAM)
+            clientSocket.connect((HOST, PORT))
+            clientSocket.send([command, filename])
             with open(filename) as sendFile:
                 clientSocket.send(sendFile)
-
+                clientSocket.close()
         # if not outputs that it can't find the file
         except FileNotFoundError:
             print('the file', filename, 'does not exist in this directory, please try again')
@@ -88,6 +84,12 @@ while command.strip().lower() != 'quit':
         if filename != '':
             print('too many parameters for command \'ls\'')
             continue
+        clientSocket = socket(AF_INET, SOCK_STREAM)
+        clientSocket.connect((HOST, PORT))
+        clientSocket.send(['ls'])
+        result = clientSocket.recv(4096)
+        print(result)
+        clientSocket.close()
 
     # lists files client side
     elif command == 'lls':
@@ -111,5 +113,4 @@ while command.strip().lower() != 'quit':
     else:
         print('command \'', command, '\' does not exist please try again', sep="")
 
-clientSocket.close()
 print('It was nice doing business with you! I hope to see you back!')
