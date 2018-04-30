@@ -1,9 +1,12 @@
+import sys
 from socket import *
 from os import listdir
 from os.path import isfile, join
+from time import sleep
 
-HOST = 'localhost'
-PORT = 8082
+HOST = sys.argv[1]
+PORT = int(sys.argv[2])
+backlog = 5
 
 print('Welcome to my FTP')
 print('Commands:')
@@ -14,7 +17,8 @@ print('\tlls - list files on your side')
 print('\thelp - sees this list again')
 
 command = ''
-filename = ''
+commandSocket = socket(AF_INET, SOCK_STREAM)
+commandSocket.connect((HOST, PORT))
 
 while command.strip().lower() != 'quit':
     command = ''
@@ -36,20 +40,34 @@ while command.strip().lower() != 'quit':
     else:
         command = combined.strip().lower()
 
+    if command in ['ls', 'put', 'get']:
+        data = 0
+        if command in ['get'] and filename != '':
+            data = (command + " " + filename).encode()
+        if command in ['put'] and filename != '':
+            data = (command + " " + filename).encode()
+        elif command == 'ls':
+            data = command.encode()
+        bytesSent = 0
+        while bytesSent < len(command):
+            bytesSent += commandSocket.send(data[bytesSent:])
+
     # downloads file from server
     if command == 'get':
         # checks if there is a filename
         if filename == '':
             print('filename required for \'get\' commands')
             continue
-
         # then prepares to receive file from server
         with open(filename, 'wb') as f:
-            clientSocket = socket(AF_INET, SOCK_STREAM)
-            clientSocket.connect((HOST, PORT))
             print('receiving data ...')
+            clientSocket = socket(AF_INET, SOCK_STREAM)
+            clientSocket.bind((HOST, PORT + 1))
+            clientSocket.listen(backlog)
+            client, addr = clientSocket.accept()
             while True:
-                data = clientSocket.recv(4096)
+                data = client.recv(4096)
+                print("an iteration", data)
                 if not data:
                     break
                 f.write(data)
@@ -67,12 +85,16 @@ while command.strip().lower() != 'quit':
 
         # checks if file exists in client's directory
         try:
-            clientSocket = socket(AF_INET, SOCK_STREAM)
-            clientSocket.connect((HOST, PORT))
-            clientSocket.send([command, filename])
+            ss = socket(AF_INET, SOCK_STREAM)
+            sleep(5)
+            ss.connect((HOST, PORT + 1))
             with open(filename) as sendFile:
-                clientSocket.send(sendFile)
-                clientSocket.close()
+                data = sendFile.read(4096).encode()
+                while data:
+                    ss.send(data)
+                    print('Sent ', repr(data))
+                    data = sendFile.read(4096).encode()
+            ss.close()
         # if not outputs that it can't find the file
         except FileNotFoundError:
             print('the file', filename, 'does not exist in this directory, please try again')
@@ -85,10 +107,11 @@ while command.strip().lower() != 'quit':
             print('too many parameters for command \'ls\'')
             continue
         clientSocket = socket(AF_INET, SOCK_STREAM)
-        clientSocket.connect((HOST, PORT))
-        clientSocket.send(['ls'])
-        result = clientSocket.recv(4096)
-        print(result)
+        clientSocket.bind((HOST, PORT + 1))
+        clientSocket.listen(backlog)
+        client, addr = clientSocket.accept()
+        data = client.recv(4096)
+        print(data)
         clientSocket.close()
 
     # lists files client side
