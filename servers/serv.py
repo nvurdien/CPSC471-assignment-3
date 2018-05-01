@@ -11,50 +11,57 @@ backlog = 5
 # info = 'SERVER ID: {} port: {}'.format(serverID, PORT)
 # print(info)
 
-serverSocket = socket(AF_INET, SOCK_STREAM)
-
-serverSocket.bind((HOST, PORT))
-
-serverSocket.listen(backlog)
 done = False
-
+serverSocket = socket(AF_INET, SOCK_STREAM)
+serverSocket.bind((HOST, PORT))
+serverSocket.listen(backlog)
 print("The server is ready to receive")
 
+client, addr = serverSocket.accept()
+
 while not done:
-    client, addr = serverSocket.accept()
+    print("accepting")
     combined = client.recv(4096).decode()
+    if combined.strip().lower() == 'quit':
+        done = True
+        continue
     command = ''
     filename = ''
-    if len(combined.split()) > 1:
+    if len(combined.split()) > 2:
         # tries to split into 2 variables
         try:
-            command, filename = combined.split()
+            command, filename, port = combined.split()
             command = command.strip().lower()
             filename = filename.strip().lower()
+            port = int(port.strip())
 
         # if not lets user know there are too many values
         except ValueError:
             print('too many parameters')
             continue
     else:
-        command = combined.strip().lower()
+        command, port = combined.split()
+        command = command.strip().lower()
+        port = int(port.strip())
 
     print(combined)
-    print(command)
-    print(filename)
 
     if command == 'ls':
-        data = os.listdir("./")
+        arr = os.listdir("./")
+        data = ''
+        for d in arr:
+            data += d + '\n'
+        data = data.encode()
         ss = socket(AF_INET, SOCK_STREAM)
         sleep(1)
-        ss.connect((HOST, PORT + 1))
+        ss.connect((HOST, port))
         ss.send(data)
     elif command == 'get':
         # checks if file exists in client's directory
         try:
             ss = socket(AF_INET, SOCK_STREAM)
             sleep(1)
-            ss.connect((HOST, PORT+1))
+            ss.connect((HOST, port))
             with open(filename) as sendFile:
                 data = sendFile.read(4096).encode()
                 while data:
@@ -72,7 +79,7 @@ while not done:
         with open(filename, 'wb') as f:
             print('receiving data ...')
             clientSocket = socket(AF_INET, SOCK_STREAM)
-            clientSocket.bind((HOST, PORT + 1))
+            clientSocket.bind((HOST, port))
             clientSocket.listen(backlog)
             client, addr = clientSocket.accept()
             while True:
@@ -80,6 +87,7 @@ while not done:
                 if not data:
                     break
                 f.write(data)
+            clientSocket.close()
         data = ('successfully received file ' + filename + '!').encode()
         bytesSent = 0
         while bytesSent != len(data):

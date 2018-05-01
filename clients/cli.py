@@ -1,12 +1,18 @@
+import random
 import sys
 from socket import *
 from os import listdir
 from os.path import isfile, join
 from time import sleep
 
+
+def get_open_port():
+    return random.randint(10000, 60000)
+
+
 HOST = sys.argv[1]
 PORT = int(sys.argv[2])
-backlog = 5
+backlog = 1
 
 print('Welcome to my FTP')
 print('Commands:')
@@ -42,12 +48,20 @@ while command.strip().lower() != 'quit':
 
     if command in ['ls', 'put', 'get']:
         data = 0
+        port = get_open_port()
+        print("the port is going to be on " + str(port))
         if command in ['get'] and filename != '':
-            data = (command + " " + filename).encode()
+            data = (command + " " + filename + " " + str(port)).encode()
         if command in ['put'] and filename != '':
-            data = (command + " " + filename).encode()
+            data = (command + " " + filename + " " + str(port)).encode()
         elif command == 'ls':
-            data = command.encode()
+            data = (command + " " + str(port)).encode()
+        bytesSent = 0
+        while bytesSent < len(command):
+            bytesSent += commandSocket.send(data[bytesSent:])
+
+    if command == 'quit':
+        data = 'quit'.encode()
         bytesSent = 0
         while bytesSent < len(command):
             bytesSent += commandSocket.send(data[bytesSent:])
@@ -58,20 +72,24 @@ while command.strip().lower() != 'quit':
         if filename == '':
             print('filename required for \'get\' commands')
             continue
+        print("opening socket!")
+        clientSocket = socket(AF_INET, SOCK_STREAM)
+        print("binding socket!")
+        clientSocket.bind((HOST, port))
+        print("listening socket with backlog " + str(backlog))
+        clientSocket.listen(backlog)
+        print("accepting connection")
+        client, addr = clientSocket.accept()
         # then prepares to receive file from server
         with open(filename, 'wb') as f:
             print('receiving data ...')
-            clientSocket = socket(AF_INET, SOCK_STREAM)
-            clientSocket.bind((HOST, PORT + 1))
-            clientSocket.listen(backlog)
-            client, addr = clientSocket.accept()
             while True:
                 data = client.recv(4096)
                 print("an iteration", data)
                 if not data:
                     break
                 f.write(data)
-            clientSocket.close()
+        clientSocket.close()
         print('successfully received file ', filename, '!', sep='')
         # close file once done writing
         f.close()
@@ -87,7 +105,7 @@ while command.strip().lower() != 'quit':
         try:
             ss = socket(AF_INET, SOCK_STREAM)
             sleep(5)
-            ss.connect((HOST, PORT + 1))
+            ss.connect((HOST, port))
             with open(filename) as sendFile:
                 data = sendFile.read(4096).encode()
                 while data:
@@ -107,11 +125,11 @@ while command.strip().lower() != 'quit':
             print('too many parameters for command \'ls\'')
             continue
         clientSocket = socket(AF_INET, SOCK_STREAM)
-        clientSocket.bind((HOST, PORT + 1))
+        clientSocket.bind((HOST, port))
         clientSocket.listen(backlog)
         client, addr = clientSocket.accept()
         data = client.recv(4096)
-        print(data)
+        print(data.decode())
         clientSocket.close()
 
     # lists files client side
@@ -135,5 +153,5 @@ while command.strip().lower() != 'quit':
         print('\thelp - sees this list again')
     else:
         print('command \'', command, '\' does not exist please try again', sep="")
-
+commandSocket.close()
 print('It was nice doing business with you! I hope to see you back!')
