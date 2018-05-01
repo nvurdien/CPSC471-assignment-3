@@ -76,22 +76,19 @@ while not done:
             continue
     elif command == 'put':
         # then prepares to receive file from server
+        clientSocket = socket(AF_INET, SOCK_STREAM)
+        clientSocket.bind((HOST, port))
+        clientSocket.listen(backlog)
+        client, addr = clientSocket.accept()
         with open(filename, 'wb') as f:
             print('receiving data ...')
-            clientSocket = socket(AF_INET, SOCK_STREAM)
-            clientSocket.bind((HOST, port))
-            clientSocket.listen(backlog)
-            client, addr = clientSocket.accept()
             while True:
                 data = client.recv(4096)
+                print("an iteration", data)
                 if not data:
                     break
                 f.write(data)
-            clientSocket.close()
-        data = ('successfully received file ' + filename + '!').encode()
-        bytesSent = 0
-        while bytesSent != len(data):
-            bytesSent += client.send(data[bytesSent:])
+        clientSocket.close()
         # close file once done writing
         f.close()
 serverSocket.close()

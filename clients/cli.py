@@ -47,6 +47,10 @@ while command.strip().lower() != 'quit':
         command = combined.strip().lower()
 
     if command in ['ls', 'put', 'get']:
+        # checks if there is a filename
+        if filename == '' and command in ['put', 'get']:
+            print('filename required for', command, 'commands')
+            continue
         data = 0
         port = get_open_port()
         print("the port is going to be on " + str(port))
@@ -68,10 +72,6 @@ while command.strip().lower() != 'quit':
 
     # downloads file from server
     if command == 'get':
-        # checks if there is a filename
-        if filename == '':
-            print('filename required for \'get\' commands')
-            continue
         print("opening socket!")
         clientSocket = socket(AF_INET, SOCK_STREAM)
         print("binding socket!")
@@ -85,7 +85,6 @@ while command.strip().lower() != 'quit':
             print('receiving data ...')
             while True:
                 data = client.recv(4096)
-                print("an iteration", data)
                 if not data:
                     break
                 f.write(data)
@@ -96,11 +95,6 @@ while command.strip().lower() != 'quit':
 
     # uploads file to server
     elif command == 'put':
-        # checks if there is a filename
-        if filename == '':
-            print('filename required for \'put\' commands')
-            continue
-
         # checks if file exists in client's directory
         try:
             ss = socket(AF_INET, SOCK_STREAM)
@@ -110,7 +104,6 @@ while command.strip().lower() != 'quit':
                 data = sendFile.read(4096).encode()
                 while data:
                     ss.send(data)
-                    print('Sent ', repr(data))
                     data = sendFile.read(4096).encode()
             ss.close()
         # if not outputs that it can't find the file
