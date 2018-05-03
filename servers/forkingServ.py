@@ -1,4 +1,5 @@
 import sys
+from pathlib import Path
 from socket import *
 import os
 from time import sleep
@@ -40,7 +41,11 @@ def perform(combine, currClient):
         ss.send(data)
     elif command == 'get':
         # checks if file exists in client's directory
-        try:
+        my_file = Path("./" + filename)
+        if my_file.exists():
+            data = ('the file ' + filename + ' does exist in this directory').encode()
+            currClient.send(data)
+            print(data)
             ss = socket(AF_INET, SOCK_STREAM)
             sleep(1)
             ss.connect((HOST, port))
@@ -51,9 +56,10 @@ def perform(combine, currClient):
                     data = sendFile.read(4096).encode()
             ss.close()
         # if not outputs that it can't find the file
-        except FileNotFoundError:
+        else:
             data = ('the file ' + filename + ' does not exist in this directory, please try again').encode()
             currClient.send(data)
+            print(data)
             return
     elif command == 'put':
         # then prepares to receive file from server
@@ -85,16 +91,17 @@ print("The server is ready to receive")
 
 client, addr = serverSocket.accept()
 
+
 while not done:
     print("accepting")
     combined = client.recv(4096).decode()
-    if combined.strip().lower() == 'quit':
+    if combined.strip().lower() == 'quit' or done:
         done = True
         continue
     pid = os.fork()
     if pid == 0:
         perform(combined, client)
-
+        done = True
 
 serverSocket.close()
 print('Server is closed')

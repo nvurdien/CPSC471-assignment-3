@@ -1,4 +1,5 @@
 import sys
+from pathlib import Path
 from socket import *
 import os
 from time import sleep
@@ -58,7 +59,11 @@ while not done:
         ss.send(data)
     elif command == 'get':
         # checks if file exists in client's directory
-        try:
+        my_file = Path("./" + filename)
+        if my_file.exists():
+            data = ('the file ' + filename + ' does exist in this directory').encode()
+            client.send(data)
+            print(data)
             ss = socket(AF_INET, SOCK_STREAM)
             sleep(1)
             ss.connect((HOST, port))
@@ -66,13 +71,13 @@ while not done:
                 data = sendFile.read(4096).encode()
                 while data:
                     ss.send(data)
-                    print('Sent ', repr(data))
                     data = sendFile.read(4096).encode()
             ss.close()
         # if not outputs that it can't find the file
-        except FileNotFoundError:
+        else:
             data = ('the file ' + filename + ' does not exist in this directory, please try again').encode()
             client.send(data)
+            print(data)
             continue
     elif command == 'put':
         # then prepares to receive file from server
@@ -84,7 +89,6 @@ while not done:
             print('receiving data ...')
             while True:
                 data = client.recv(4096)
-                print("an iteration", data)
                 if not data:
                     break
                 f.write(data)

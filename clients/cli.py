@@ -1,5 +1,6 @@
 import random
 import sys
+from pathlib import Path
 from socket import *
 from os import listdir
 from os.path import isfile, join
@@ -72,6 +73,11 @@ while command.strip().lower() != 'quit':
 
     # downloads file from server
     if command == 'get':
+        yes = commandSocket.recv(4096).decode()
+        splitting = yes.split()
+        if splitting[len(splitting) - 1] == 'again':
+            print(yes)
+            continue
         print("opening socket!")
         clientSocket = socket(AF_INET, SOCK_STREAM)
         print("binding socket!")
@@ -80,6 +86,7 @@ while command.strip().lower() != 'quit':
         clientSocket.listen(backlog)
         print("accepting connection")
         client, addr = clientSocket.accept()
+
         # then prepares to receive file from server
         with open(filename, 'wb') as f:
             print('receiving data ...')
@@ -96,7 +103,8 @@ while command.strip().lower() != 'quit':
     # uploads file to server
     elif command == 'put':
         # checks if file exists in client's directory
-        try:
+        my_file = Path("./" + filename)
+        if my_file.exists():
             ss = socket(AF_INET, SOCK_STREAM)
             sleep(5)
             ss.connect((HOST, port))
@@ -107,7 +115,7 @@ while command.strip().lower() != 'quit':
                     data = sendFile.read(4096).encode()
             ss.close()
         # if not outputs that it can't find the file
-        except FileNotFoundError:
+        else:
             print('the file', filename, 'does not exist in this directory, please try again')
             continue
 
