@@ -114,6 +114,7 @@ while command.strip().lower() != 'quit':
                     ss.send(data)
                     data = sendFile.read(4096).encode()
             ss.close()
+            print('successfully put file ', filename, ' on server!', sep='')
         # if not outputs that it can't find the file
         else:
             print('the file', filename, 'does not exist in this directory, please try again')
