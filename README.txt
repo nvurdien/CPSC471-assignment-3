@@ -2,6 +2,8 @@ Navie Vurdien - nvurdien@csu.fullerton.edu
 Andrew Le - andrewle19@csu.fullerton.edu
 Eric Fratzke - eric.fratzke@csu.fullerton.edu
 Syed Hussaini - syedhussaini@csu.fullerton.edu
+Steven Espin - sespin@csu.fullerton.edu
+Nelson Luong - nluong@csu.fullerton.edu
 
 This program is written in Python 3.6
 
